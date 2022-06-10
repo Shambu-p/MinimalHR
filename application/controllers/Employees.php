@@ -41,37 +41,16 @@ class Employees extends REST_Controller {
 	 * 	]
 	 *
 	 */
-	function register_user_post(){
-
-//		$config = array(
-//			array(
-//				'field' => 'full_name',
-//				'label' => 'full_name',
-//				'rules' => 'required'
-//			),
-//			array(
-//				'field' => 'password',
-//				'label' => 'Password',
-//				'rules' => 'required',
-//				'errors' => array(
-//					'required' => 'You must provide a %s.',
-//				),
-//			),
-//			array(
-//				'field' => 'passconf',
-//				'label' => 'Password Confirmation',
-//				'rules' => 'required'
-//			),
-//			array(
-//				'field' => 'email',
-//				'label' => 'Email',
-//				'rules' => 'required'
-//			)
-//		);
-//
-//		$this->form_validation->set_rules($config);
+	function register_employee_post(){
 
 		$this->load->model("EmployeeModel");
+
+		if(!$this->form_validation->run()){
+			$this->response([
+				"message" => validation_errors()
+			], 201);
+			return;
+		}
 
 //		$this->response($this->EmployeeModel->registerEmployee($this->input->post()), 200);
 		$this->response($this->EmployeeModel->registerEmployee(
