@@ -1,9 +1,92 @@
 <?php
+error_reporting(!E_DEPRECATED );
 
+require APPPATH . '/libraries/REST_Controller.php';
+use Restserver\Libraries\REST_Controller;
 
-class Employees extends CI_Controller {
+class Employees extends REST_Controller {
 
-	function register_user(){
+	/**
+	 * creates new employee on employee table
+	 * the requester will be authenticated using sent token
+	 * parameters using post method
+	 * @parameters using post method
+	 * full_name
+	 * email
+	 * profile_picture
+	 * documents
+	 * salary
+	 * phone_number
+	 * education_level
+	 * department_id
+	 * address
+	 * @address is json string containing array of address for example
+	 *  [
+	 * 		{
+	 * 			"email": "the email",
+	 * 			"phone_number": "+251983475985", //can be empty
+	 * 			"city": "my city",
+	 * 			"sub_city": "my sub city",
+	 * 			"place_name": "place name can be empty",
+	 * 			"street_name": "street name can be empty"
+	 * 		},
+	 *      {
+	 * 			"email": "the email",
+	 * 			"phone_number": "+251983475985", //can be empty
+	 * 			"city": "my city",
+	 * 			"sub_city": "my sub city",
+	 * 			"place_name": "place name can be empty",
+	 * 			"street_name": "street name can be empty"
+	 * 		}
+	 * 	]
+	 *
+	 */
+	function register_user_post(){
+
+//		$config = array(
+//			array(
+//				'field' => 'full_name',
+//				'label' => 'full_name',
+//				'rules' => 'required'
+//			),
+//			array(
+//				'field' => 'password',
+//				'label' => 'Password',
+//				'rules' => 'required',
+//				'errors' => array(
+//					'required' => 'You must provide a %s.',
+//				),
+//			),
+//			array(
+//				'field' => 'passconf',
+//				'label' => 'Password Confirmation',
+//				'rules' => 'required'
+//			),
+//			array(
+//				'field' => 'email',
+//				'label' => 'Email',
+//				'rules' => 'required'
+//			)
+//		);
+//
+//		$this->form_validation->set_rules($config);
+
+		$this->load->model("EmployeeModel");
+
+//		$this->response($this->EmployeeModel->registerEmployee($this->input->post()), 200);
+		$this->response($this->EmployeeModel->registerEmployee(
+				$this->input->post("full_name"),
+				$this->input->post("email"),
+				$this->input->post("profile_picture"),
+				$this->input->post("documents"),
+				$this->input->post("salary"),
+				$this->input->post("phone_number"),
+				$this->input->post("education_level"),
+				$this->input->post("department_id"),
+				$this->input->post("position")
+			),
+			200
+		);
 
 	}
 
@@ -27,10 +110,24 @@ class Employees extends CI_Controller {
 
 	}
 
-	function employee_detail($employee_id, $token){
+	/**
+	 * returns specific employee detail which is identified by employee_id
+	 * @param $employee_id string
+	 * @param $token string
+	 * this is  a php function
+	 *
+	 * parameters should be sent using get method
+	 */
+	function employee_detail(string $employee_id, string $token){
 
 	}
 
+	/**
+	 * returns employees list after authenticating the requester
+	 * using authentication token
+	 * @param $token
+	 * parameter token should be sent using get method
+	 */
 	function employee_list($token){
 
 	}
@@ -40,6 +137,34 @@ class Employees extends CI_Controller {
 	 * parameters using post method
 	 * @parameters using post method
 	 * full_name
+	 * email
+	 * profile_picture
+	 * documents
+	 * salary
+	 * phone_number
+	 * education_level
+	 * department_id
+	 * address
+	 * @address is json string containing array of address for example
+	 *  [
+	 * 		{
+	 * 			"email": "the email",
+	 * 			"phone_number": "+251983475985", //can be empty
+	 * 			"city": "my city",
+	 * 			"sub_city": "my sub city",
+	 * 			"place_name": "place name can be empty",
+	 * 			"street_name": "street name can be empty"
+	 * 		},
+	 *      {
+	 * 			"email": "the email",
+	 * 			"phone_number": "+251983475985", //can be empty
+	 * 			"city": "my city",
+	 * 			"sub_city": "my sub city",
+	 * 			"place_name": "place name can be empty",
+	 * 			"street_name": "street name can be empty"
+	 * 		}
+	 * 	]
+	 *
 	 */
 	function apply(){
 		echo json_encode(["hello"]);
@@ -79,11 +204,11 @@ class Employees extends CI_Controller {
 	}
 
 	/**
-	 * @param $application_id
+	 * @param $application_id int
 	 * @param $token
 	 * returns the detail of application which will be identified by application id
 	 */
-	function application_detail($application_id, $token){
+	function application_detail(int $application_id, $token){
 
 	}
 
