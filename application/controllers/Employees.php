@@ -52,20 +52,20 @@ class Employees extends REST_Controller {
 			return;
 		}
 
-//		$this->response($this->EmployeeModel->registerEmployee($this->input->post()), 200);
-		$this->response($this->EmployeeModel->registerEmployee(
-				$this->input->post("full_name"),
-				$this->input->post("email"),
-				$this->input->post("profile_picture"),
-				$this->input->post("documents"),
-				$this->input->post("salary"),
-				$this->input->post("phone_number"),
-				$this->input->post("education_level"),
-				$this->input->post("department_id"),
-				$this->input->post("position")
-			),
-			200
-		);
+		$this->response($this->EmployeeModel->registerEmployee($this->input->post()), 200);
+//		$this->response($this->EmployeeModel->registerEmployee(
+//				$this->input->post("full_name"),
+//				$this->input->post("email"),
+//				$this->input->post("profile_picture"),
+//				$this->input->post("documents"),
+//				$this->input->post("salary"),
+//				$this->input->post("phone_number"),
+//				$this->input->post("education_level"),
+//				$this->input->post("department_id"),
+//				$this->input->post("position")
+//			),
+//			200
+//		);
 
 	}
 

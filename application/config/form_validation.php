@@ -5,7 +5,7 @@ $config = array(
 		[
 			'field' => 'full_name',
 			'label' => 'full_name',
-			'rules' => 'required|alpha|max_length[100]|min_length[10]'
+			'rules' => 'required|regex_match[/(\w\s?)+/]|max_length[100]|min_length[10]'
 		],
 		[
 			'field' => 'email',
@@ -30,12 +30,12 @@ $config = array(
 		[
 			'field' => 'phone_number',
 			'label' => 'phone_number',
-			'rules' => 'required|trim|regex_match[/\(\+2519\)|\(09\)\d{8}/]|max_length[14]'
+			'rules' => 'required|trim|regex_match[/(\+2519|09)\d{8}/]|max_length[14]'
 		],
 		[
 			'field' => 'education_level',
 			'label' => 'education_level',
-			'rules' => 'required|in_list[ba, bsc, beng, llb, marts, mbiol, mcomp, meng, mmath, mphys, msci, ma, msc, mba, mphil, mres, llm, phd]'
+			'rules' => 'required|in_list[ba,bsc,beng,llb,marts,mbiol,mcomp,meng,mmath,mphys,msci,ma,msc,mba,mphil,mres,llm,phd]'
 		],
 		[
 			'field' => 'department_id',
@@ -45,7 +45,12 @@ $config = array(
 		[
 			'field' => 'position',
 			'label' => 'position',
-			'rules' => 'required|alpha|max_length[100]'
+			'rules' => 'required|trim|regex_match[/(\w\s?)+/]|max_length[100]'
+		],
+		[
+			'field' => 'address',
+			'label' => 'address',
+			'rules' => 'required'
 		]
 	]
 );

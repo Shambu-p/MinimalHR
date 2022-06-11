@@ -31,38 +31,55 @@ class EmployeeModel extends CI_Model {
 	 * @return array
 	 *           returns the inserted data in to the database
 	 */
-	function registerEmployee(string $full_name, string $email, string $profile_picture, string $document, float $salary, string $phone_number, string $education_level, int $department_id, string $position, int $vacancy_id = 0){
+	function registerEmployee(array $request){
 
 		$this->db->insert($this->table_name, [
-			"full_name" => $full_name,
-			"email" => $email,
-			"profile_picture" => $profile_picture,
-			"documents" => $document,
-			"salary" => $salary,
-			"phone_number" => $phone_number,
-			"education_level" => $education_level,
-			"employee_department" => $department_id,
-			"position" => $position,
-			"status" => "pending"
+			"full_name" => $request["full_name"],
+			"email" => $request["email"],
+			"profile_picture" => $request["profile_picture"],
+			"documents" => $request["documents"],
+			"salary" => $request["salary"],
+			"phone_number" => $request["phone_number"],
+			"education_level" => $request["education_level"],
+			"employee_department" => $request["department_id"],
+			"position" => $request["position"],
+			"status" => isset($request["vacancy"]) ? "pending" : "accepted"
 		]);
 
 		$employee_id = $this->db->insert_id();
-		$generated_application_number = $vacancy_id ? intval($vacancy_id . $employee_id) : intval($employee_id . $vacancy_id);
+		$generated_application_number = isset($request["vacancy"]) ? intval($request["vacancy"] . $employee_id) : intval($employee_id . $request["vacancy"]);
 
 		$this->db->set("application_number", $generated_application_number);
+		$this->db->where("id", $employee_id);
 		$this->db->update($this->table_name);
 
+		$address = (array) json_decode($request["address"]);
+		$address_array = [];
+
+		foreach($address as $single_address){
+
+			$single_address->employee_id = $employee_id;
+			$this->db->insert("address", (array) $single_address);
+			$address_array[] = (array) $single_address;
+
+		}
+
 		return [
-			"id" => $employee_id,
-			"full_name" => $full_name,
-			"email" => $email,
-			"profile_picture" => $profile_picture,
-			"documents" => $document,
-			"salary" => $salary,
-			"phone_number" => $phone_number,
-			"education_level" => $education_level,
-			"employee_department" => $department_id,
-			"application_number" => $generated_application_number
+			"employee" => [
+				"id" => $employee_id,
+				"full_name" => $request["full_name"],
+				"email" => $request["email"],
+				"profile_picture" => $request["profile_picture"],
+				"documents" => $request["documents"],
+				"salary" => $request["salary"],
+				"phone_number" => $request["phone_number"],
+				"education_level" => $request["education_level"],
+				"employee_department" => $request["employee_department"],
+				"position" => $request["position"],
+				"status" => isset($request["vacancy"]) ? "pending" : "accepted",
+				"application_number" => $generated_application_number
+			],
+			"address" => $address_array
 		];
 
 	}
