@@ -37,19 +37,29 @@ class DepartmentModel extends CI_Model {
 	 * changing department details
 	 * @param int $department_id
 	 *          department identifier number
-	 * @param string $department_name
+	 * @param string|null $department_name
 	 *          the new department title or name to be changed
 	 *          in place of the previous name or title
-	 * @param int $department_head
+	 * @param int|null $department_head
 	 *          employee's identifier number which wanted to be assigned
 	 *          for the department head position in place of the previous head
 	 * @return array
 	 */
-	function updateDepartment(int $department_id, string $department_name, int $department_head){
+	function updateDepartment(int $department_id, $department_name = null, $department_head = null){
 
-		$this->db->set("id", $department_id);
-		$this->db->set("name", $department_name);
-		$this->db->set("department_head", $department_head);
+		if(!$department_head && !$department_name){
+			return [];
+		}
+
+		if($department_name){
+			$this->db->set("name", $department_name);
+		}
+
+		if($department_head){
+			$this->db->set("department_head", $department_head);
+		}
+
+		$this->db->where("id", $department_id);
 		$this->db->update($this->table_name);
 
 		return [

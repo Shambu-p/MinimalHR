@@ -6,6 +6,11 @@ use Restserver\Libraries\REST_Controller;
 
 class Employees extends REST_Controller {
 
+	function __construct() {
+		parent::__construct();
+		$this->load->model("EmployeeModel");
+	}
+
 	/**
 	 * creates new employee on employee table
 	 * the requester will be authenticated using sent token
@@ -43,33 +48,101 @@ class Employees extends REST_Controller {
 	 */
 	function register_employee_post(){
 
-		$this->load->model("EmployeeModel");
+		if(!$this->form_validation->run()){
+			$this->response([
+				"message" => validation_errors()
+			], 500);
+			return;
+		}
+
+		$this->load->library('upload', [
+			'upload_path' => './uploads/profile_pictures',
+			'file_name' => 'profile_pic_' . $this->input->post("email") . '.png',
+			'allowed_types' => ['jpg', 'png', 'ico', 'jpeg'],
+			'max_size' => 1000
+		]);
+
+		if(!$this->upload->do_upload('profile_picture')){
+			$this->response(
+				["message" => "image file: " . $this->upload->display_errors()],
+				500
+			);
+			return;
+		}else{
+			$profile_upload = $this->upload->data();
+		}
+
+		$this->upload = null;
+		$this->load->library('upload', [
+			'upload_path' => './uploads/documents',
+			'file_name' => 'application_doc_'.$this->input->post("email").'.zip',
+			'allowed_types' => ['zip'],
+			'max_size' => 1000
+		]);
+
+		if(!$this->upload->do_upload('documents')){
+			$this->response(
+				["message" => "document file: " . $this->upload->display_errors()],
+				500
+			);
+			return;
+		}else{
+			$document_upload = $this->upload->data();
+		}
+
+		$this->response(
+			[
+				"profile_picture" => $profile_upload,
+				"document" => $document_upload
+			],
+			500
+		);
+
+		$requests = $this->input->post();
+		$requests["profile_picture"] = $profile_upload["file_name"];
+		$requests["documents"] = $document_upload["file_name"];
+
+		$this->response($this->EmployeeModel->registerEmployee($requests), 200);
+
+	}
+
+	/**
+	 * changes employee password identified by employee id
+	 */
+	function change_password_post(){
 
 		if(!$this->form_validation->run()){
 			$this->response([
 				"message" => validation_errors()
-			], 201);
+			], 500);
 			return;
 		}
 
-		$this->response($this->EmployeeModel->registerEmployee($this->input->post()), 200);
-//		$this->response($this->EmployeeModel->registerEmployee(
-//				$this->input->post("full_name"),
-//				$this->input->post("email"),
-//				$this->input->post("profile_picture"),
-//				$this->input->post("documents"),
-//				$this->input->post("salary"),
-//				$this->input->post("phone_number"),
-//				$this->input->post("education_level"),
-//				$this->input->post("department_id"),
-//				$this->input->post("position")
-//			),
-//			200
-//		);
+		if($this->input->post("new_password") != $this->input->post("confirm_password")){
+			$this->response([
+				"message" => "password confirmation doesn't match with the new password"
+			], 500);
+		}
 
-	}
+		$this->load->model("AccountModel");
 
-	function change_password(){
+		try{
+
+			$this->response(
+				$this->AccountModel->changePassword(
+					$this->input->post("employee_id"),
+					$this->input->post("old_password"),
+					$this->input->post("new_password")
+				),
+				200
+			);
+
+		} catch(Exception $exception) {
+			$this->response(
+				["message" => $exception->getMessage()],
+				500
+			);
+		}
 
 	}
 

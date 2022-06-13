@@ -12,16 +12,16 @@ $config = array(
 			'label' => 'email',
 			'rules' => 'required|valid_email|is_unique[Employee.email]|max_length[50]'
 		],
-		[
-			'field' => 'profile_picture',
-			'label' => 'profile_picture',
-			'rules' => 'required'
-		],
-		[
-			'field' => 'documents',
-			'label' => 'documents',
-			'rules' => 'required'
-		],
+//		[
+//			'field' => 'profile_picture',
+//			'label' => 'profile_picture',
+//			'rules' => 'required'
+//		],
+//		[
+//			'field' => 'documents',
+//			'label' => 'documents',
+//			'rules' => 'required'
+//		],
 		[
 			'field' => 'salary',
 			'label' => 'salary',
@@ -52,5 +52,56 @@ $config = array(
 			'label' => 'address',
 			'rules' => 'required'
 		]
+	],
+	'Employees/change_password' => [
+		[
+			'field' => 'employee_id',
+			'label' => 'employee_id',
+			'rules' => 'required|integer'
+		],
+		[
+			'field' => 'old_password',
+			'label' => 'old_password',
+			'rules' => 'required|max_length[20]|min_length[8]'
+		],
+		[
+			'field' => 'new_password',
+			'label' => 'new_password',
+			'rules' => 'required|max_length[20]|min_length[8]'
+		],
+		[
+			'field' => 'confirm_password',
+			'label' => 'confirm_password',
+			'rules' => 'required|max_length[20]|min_length[8]'
+		],
+	],
+	'Department/create' => [
+		[
+			'field' => 'name',
+			'label' => 'name',
+			'rules' => 'required|regex_match[/(\w\s?)+/]|max_length[100]|min_length[10]'
+		],
+		[
+			'field' => 'department_head',
+			'label' => 'department_head',
+			'rules' => 'integer|max_length[100]|min_length[10]'
+		]
+	],
+	'Department/update' => [
+		[
+			'field' => 'department_id',
+			'label' => 'department_id',
+			'rules' => 'required|integer'
+		],
+		[
+			'field' => 'department_name',
+			'label' => 'department_name',
+			'rules' => 'regex_match[/(\w\s?)+/]|max_length[100]|min_length[10]'
+		],
+		[
+			'field' => 'department_head',
+			'label' => 'department_head',
+			'rules' => 'integer'
+		],
 	]
 );
