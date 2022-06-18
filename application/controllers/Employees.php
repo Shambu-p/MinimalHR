@@ -26,25 +26,6 @@ class Employees extends REST_Controller {
 	 * department_id
 	 * address
 	 * @address is json string containing array of address for example
-	 *  [
-	 * 		{
-	 * 			"email": "the email",
-	 * 			"phone_number": "+251983475985", //can be empty
-	 * 			"city": "my city",
-	 * 			"sub_city": "my sub city",
-	 * 			"place_name": "place name can be empty",
-	 * 			"street_name": "street name can be empty"
-	 * 		},
-	 *      {
-	 * 			"email": "the email",
-	 * 			"phone_number": "+251983475985", //can be empty
-	 * 			"city": "my city",
-	 * 			"sub_city": "my sub city",
-	 * 			"place_name": "place name can be empty",
-	 * 			"street_name": "street name can be empty"
-	 * 		}
-	 * 	]
-	 *
 	 */
 	function register_employee_post(){
 
@@ -89,14 +70,6 @@ class Employees extends REST_Controller {
 		}else{
 			$document_upload = $this->upload->data();
 		}
-
-		$this->response(
-			[
-				"profile_picture" => $profile_upload,
-				"document" => $document_upload
-			],
-			500
-		);
 
 		$requests = $this->input->post();
 		$requests["profile_picture"] = $profile_upload["file_name"];
@@ -143,6 +116,12 @@ class Employees extends REST_Controller {
 				500
 			);
 		}
+
+	}
+
+	function get_employee_file_get($token){
+
+		$this->EmployeeModel->getEmployeeById();
 
 	}
 

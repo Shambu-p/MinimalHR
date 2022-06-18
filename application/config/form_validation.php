@@ -10,18 +10,8 @@ $config = array(
 		[
 			'field' => 'email',
 			'label' => 'email',
-			'rules' => 'required|valid_email|is_unique[Employee.email]|max_length[50]'
+			'rules' => 'required|valid_email|is_unique[employee.email]|max_length[50]'
 		],
-//		[
-//			'field' => 'profile_picture',
-//			'label' => 'profile_picture',
-//			'rules' => 'required'
-//		],
-//		[
-//			'field' => 'documents',
-//			'label' => 'documents',
-//			'rules' => 'required'
-//		],
 		[
 			'field' => 'salary',
 			'label' => 'salary',
@@ -103,5 +93,18 @@ $config = array(
 			'label' => 'department_head',
 			'rules' => 'integer'
 		],
+	],
+
+	'Auth/login' => [
+		[
+			'field' => 'email',
+			'label' => 'email',
+			'rules' => 'required|valid_email|max_length[50]'
+		],
+		[
+			'field' => 'password',
+			'label' => 'password',
+			'rules' => 'required|max_length[20]|min_length[8]'
+		]
 	]
 );

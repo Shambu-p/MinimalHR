@@ -2,7 +2,7 @@
 
 class EmployeeModel extends CI_Model {
 
-	private string $table_name = 'Employee';
+	private string $table_name = 'employee';
 
 	/**
 	 * @param $full_name string
@@ -54,17 +54,7 @@ class EmployeeModel extends CI_Model {
 		$this->db->update($this->table_name);
 
 		$address = (array) json_decode($request["address"]);
-		$address_array = [];
-
-		foreach($address as $single_address){
-
-			$single_address->employee_id = $employee_id;
-			$this->db->insert("address", (array) $single_address);
-			$address_array[] = (array) $single_address;
-
-		}
-
-		return [
+		$final_array = [
 			"employee" => [
 				"id" => $employee_id,
 				"full_name" => $request["full_name"],
@@ -79,8 +69,69 @@ class EmployeeModel extends CI_Model {
 				"status" => isset($request["vacancy"]) ? "pending" : "accepted",
 				"application_number" => $generated_application_number
 			],
-			"address" => $address_array
+			"address" => [],
+
 		];
+
+		foreach($address as $single_address){
+
+			$single_address->employee_id = $employee_id;
+			$this->db->insert("address", (array) $single_address);
+			$final_array["address"][] = (array) $single_address;
+
+		}
+
+		if(!isset($request["vacancy"])){
+
+			$password = $this->passwordGenerator();
+			$account = [
+				"employee_id" => $employee_id,
+				"email" => $request["email"],
+				"status" => "active",
+				"is_admin" => false,
+				"password" => password_hash($password, PASSWORD_DEFAULT)
+			];
+
+			$this->db->insert('account', $account);
+			$account["password"] = $password;
+			$final_array["Account"] = $account;
+
+		}
+
+		return $final_array;
+
+	}
+
+	function passwordGenerator(){
+
+		$comb = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+		$pass = array();
+		$combLen = strlen($comb) - 1;
+		for ($i = 0; $i < 8; $i++) {
+			$n = rand(0, $combLen);
+			$pass[] = $comb[$n];
+		}
+		return implode($pass);
+
+	}
+
+	/**
+	 * get an employee by using email address
+	 * @param string $email
+	 * 			email address
+	 */
+	function getEmployeeByEmail(string $email){
+		return $this->db->get_where($this->table_name, ['email' => $email])->result();
+	}
+
+	function getAll(){
+		return $this->db->get($this->table_name)->result();
+	}
+
+	function getEmployee($id){
+
+		$result = $this->db->get_where($this->table_name, ['id' => $id])->result();
+		return (sizeof($result) > 0) ? $result[0] : [];
 
 	}
 

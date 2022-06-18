@@ -2,7 +2,7 @@
 
 class DepartmentModel extends CI_Model {
 
-	private string $table_name = "Department";
+	private string $table_name = "department";
 
 	/**
 	 * creating new department
